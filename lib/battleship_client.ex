@@ -1,18 +1,13 @@
 defmodule BattleshipClient do
-  @moduledoc """
-  Documentation for BattleshipClient.
-  """
 
-  @doc """
-  Hello world.
+  def start(server_name) do
 
-  ## Examples
+    Node.set_cookie(Node.self, :"test")
 
-      iex> BattleshipClient.hello
-      :world
-
-  """
-  def hello do
-    :world
+    case Node.connect(server_name) do
+      true   -> :ok
+      reason -> IO.puts "Could not connect to server, reason: #{reason}"
+                System.halt(0)
+    end
   end
 end
