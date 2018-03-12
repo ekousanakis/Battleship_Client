@@ -33,7 +33,6 @@ defmodule BattleshipClient do
     Node.set_cookie(Node.self, :"test")
     case Node.connect(@server_name) do
       true   ->
-        IO.inspect(self(), label: "I AM")
         Process.send({:game_server ,@server_name}, {:join_game, username, Node.self, self()}, [])
       reason -> IO.puts "Could not connect to server, reason: #{reason}"
     end
@@ -55,6 +54,9 @@ defmodule BattleshipClient do
 
   def handle_info({:game_created, game_pid}, state) do
     IO.puts "joined game with pid: #{inspect game_pid}"
+    UI.print(state.my_board)
+    UI.print(state.shot_board)
+
     {:noreply, %{state | game_pid: game_pid}}
   end
 
@@ -89,8 +91,6 @@ defmodule BattleshipClient do
         :your_turn                -> IO.puts "It's your turn to play now..."
         :not_your_turn            -> IO.puts "Move canceled, not your turn..."
       end
-      UI.print(state.my_board)
-      UI.print(state.shot_board)
     {:noreply, state}
   end
 
